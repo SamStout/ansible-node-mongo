@@ -1,0 +1,20 @@
+---
+- hosts: mongodb
+  remote_user: ubuntu
+  tasks:
+    - name: Import the public key for APT
+      shell: sudo wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
+    - name: Create list file for MongoDV
+      shell: sudo echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+    - name: Update packages
+      shell: sudo apt-get update
+    - name: Install Mongo
+      shell: sudo apt-get install -y mongodb-org
+    - name: Remove Exsiting Conf File
+      shell: sudo rm /etc/mongod.conf
+    - name: Copy New Conf File
+      shell: sudo ln -s /home/vagrant/env/mongodb/mongod.conf /etc/mongod.conf
+    - name: Start Mongo
+      shell: sudo systemctl start mongod
+    - name: Get Mongo Status
+      shell: sudo systemctl status mongod

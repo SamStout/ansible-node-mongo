@@ -1,0 +1,32 @@
+- hosts: nodeapp
+  remote_user: ubuntu
+  tasks:
+    - name: Update source list
+      shell: sudo apt-get update -y
+    - name: Install Python
+      shell: sudo apt-get install software-properties-common -y
+    - name: Download node v18
+      shell: curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+    - name: Install node
+      shell: sudo apt-get install -y nodejs -y
+    - name: Install npm
+      shell: sudo apt-get install npm -y
+    - name: Installing Apache
+      shell: sudo apt install apache2 -y
+    - name: Enabling Apache Proxy
+      shell: sudo a2enmod proxy
+    - name: Enabling Apache Proxy
+      shell: sudo a2enmod proxy_http
+    - name: Add nology Apache Proxy File
+      shell: cp /home/vagrant/env/nodeapp/nology-proxy.conf /etc/apache2/sites-available
+    - name: Register nology Apache Proxy File
+      shell: sudo a2ensite nology-proxy.conf
+    - name: Restart Apache
+      shell: sudo systemctl reload apache2
+    - name: Move into App Folder
+      shell: cd ../vagrant/app
+    - name: Install Dependancies
+      shell: npm install
+    - name: Run App
+      shell: node index.js
+  
